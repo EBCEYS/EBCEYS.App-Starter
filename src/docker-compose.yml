@@ -1,0 +1,54 @@
+services:
+  ebceys.server-configuration:
+    container_name: ebceys.server-configuration
+    hostname: ebceys.server-configuration
+    environment:
+      - SERVICE_ENABLE_SWAGGER=true
+      - SERVICE_DATABASE_PATH=/data/configuration.db 
+      - DOCKER_CONNECTION_USE_DEFAULT=true
+      - DOCKER_CONNECTION_URL=unix:///var/run/docker.sock
+      - CONFIG_PROCESSOR_ENABLE=false
+      - CONFIG_PROCESSOR_CONFIGS_PATH=/storage/configs
+      - CONFIG_PROCESSOR_PROCESS_PERIOD=00:00:10
+      - CONFIG_PROCESSOR_CONTAINER_LABEL_KEY=configuration.service.type.name
+      - CONFIG_PROCESSOR_CONTAINER_CONFIG_PATH_LABEL_KEY=configuration.file.path
+      - CONFIG_PROCESSOR_CONTAINER_LABEL_RESTART_AFTER=configuration.restartafter
+      - KEYS_STORAGE_PATH=/storage/keys
+      - KEYS_STORAGE_FORGET_OLD_KEYS=true
+      - DBCLEANER_TIME_TO_STORE=00:00:10
+    image: ${DOCKER_REGISTRY-}ebceys/serverconfiguration:1.0.0
+    volumes:
+      - C:\\storage:/storage:rw
+      - C:\\server-configuration\data:/data:rw
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "5007:3000"
+      - "5008:8080"
+    networks:
+      - "testnet"
+  ebceys.container-appstarter:
+    container_name: appstarter
+    # image: ${DOCKER_REGISTRY-}ebceyscontainerappstarter
+    image: ${DOCKER_REGISTRY-}ebceys/apps-starter:1.0.0
+    environment:
+      - CONFIGURATION_CONTAINER_TYPE_NAME=rabbitmq
+      - CONFIGURATION_SERVER_URI=http://ebceys.server-configuration:3000
+      - CONFIGURATION_SAVE_DIRECTORY=/configs/data
+      - CONFIGURATION_BREAK_START_IF_NO_CONFIGS=true
+      - APP_STARTER_EXECUTION_FILE=/configs/somebinary.bash
+      - APP_STARTER_EXECUTION_ARGS=arg1 arg2 arg3
+      - CONFIGURATION_REQUEST_PERIOD=00:00:10
+      # - APP_STARTER_WORKING_DIRECTORY=/
+    # build:
+    #   context: .
+    #   dockerfile: EBCEYS.Container-AppStarter/Dockerfile
+    volumes:
+      - C:\\TestAppStarter:/configs:rw
+    networks:
+      - "testnet"
+    depends_on:
+      - ebceys.server-configuration
+networks:
+  testnet:
+    name: testnet
+    external: true
