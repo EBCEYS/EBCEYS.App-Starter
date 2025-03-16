@@ -12,6 +12,7 @@
 1. *APP_STARTER_EXECUTION_ARGS* - *string*. Аргументы для исполняемого файла приложения. По умолчанию *string.empty*.
 1. *APP_STARTER_WORKING_DIRECTORY* - *DirectoryString*. Рабочая директория исполняемого файла. По умолчанию берется директория исполняемого файла.
 1. *APP_STARTER_RESTART_APP_ON_CONFIG_UPDATE* - *true/false*. Перезапускать испольняемое приложение в случае обновления конфигурации. По умолчанию *true*.
+1. *APP_STARTER_HEALTHCHECKS_OPTIONS_DIRECTORY* - *DirectoryString*. Путь до директории с настройками *HealthCheck-ов*. По умолчанию */appstarter/configs/*;
 
 ## *Configuration*:
 

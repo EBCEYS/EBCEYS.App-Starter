@@ -28,20 +28,25 @@ services:
       - "testnet"
   ebceys.container-appstarter:
     container_name: appstarter
-    # image: ${DOCKER_REGISTRY-}ebceyscontainerappstarter
-    image: ${DOCKER_REGISTRY-}ebceys/apps-starter:1.0.0
+    image: ${DOCKER_REGISTRY-}ebceyscontainerappstarter
+    #image: ${DOCKER_REGISTRY-}ebceys/apps-starter:1.0.0
     environment:
       - CONFIGURATION_CONTAINER_TYPE_NAME=rabbitmq
       - CONFIGURATION_SERVER_URI=http://ebceys.server-configuration:3000
-      - CONFIGURATION_SAVE_DIRECTORY=/configs/data
+      - CONFIGURATION_SAVE_DIRECTORY=/configs
+      - APP_STARTER_HEALTHCHECKS_OPTIONS_DIRECTORY=/configs/__appstarter
       - CONFIGURATION_BREAK_START_IF_NO_CONFIGS=true
       - APP_STARTER_EXECUTION_FILE=/configs/somebinary.bash
       - APP_STARTER_EXECUTION_ARGS=arg1 arg2 arg3
       - CONFIGURATION_REQUEST_PERIOD=00:00:10
-      # - APP_STARTER_WORKING_DIRECTORY=/
-    # build:
-    #   context: .
-    #   dockerfile: EBCEYS.Container-AppStarter/Dockerfile
+      - APP_STARTER_WORKING_DIRECTORY=/
+      - CONFIGURATION_REQUEST_RETRIES=3
+      - CONFIGURATION_REQUEST_DELAY=00:00:05
+      - HEALTHCHECKS_ENABLE=true
+      - HEALTHCHECKS_STARTING_PORT=8080 
+    build:
+      context: .
+      dockerfile: EBCEYS.Container-AppStarter/Dockerfile
     volumes:
       - C:\\TestAppStarter:/configs:rw
     networks:

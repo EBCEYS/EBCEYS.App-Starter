@@ -2,7 +2,7 @@
 
 namespace EBCEYS.Container_AppStarter.Options
 {
-    internal class AppStarterServiceOptions(TimeSpan delayBeforeStart, string? execFile, string? execArgs, string? workingDir, TimeSpan requestPeriod, int requestReties, TimeSpan retriesDelay)
+    internal class AppStarterServiceOptions(TimeSpan delayBeforeStart, string? execFile, string? execArgs, string? workingDir, TimeSpan requestPeriod, int requestReties, TimeSpan retriesDelay, bool restartOnConfUpdate)
     {
         public TimeSpan DelayBeforeStart { get; } = delayBeforeStart;
         public string ExecutionFile { get; } = execFile ?? throw new Exception("No file to execute!");
@@ -11,6 +11,7 @@ namespace EBCEYS.Container_AppStarter.Options
         public TimeSpan ConfigRequestPeriod { get; } = requestPeriod;
         public int Retries { get; } = requestReties > 1 ? requestReties : 1;
         public TimeSpan RetiesDelay { get; } = retriesDelay;
+        public bool RestartAfterConfUpdates { get; } = restartOnConfUpdate;
         public static AppStarterServiceOptions CreateFromEnvironment()
         {
             string? execFile = SupportedEnvironmentVariables.ExecFile.Value;
@@ -31,7 +32,8 @@ namespace EBCEYS.Container_AppStarter.Options
                 SupportedEnvironmentVariables.WorkingDirectory.Value,
                 SupportedEnvironmentVariables.ConfigRequestPeriod.Value!.Value,
                 SupportedEnvironmentVariables.ConfigRequestRetries.Value,
-                SupportedEnvironmentVariables.ConfigRequestDelay.Value!.Value
+                SupportedEnvironmentVariables.ConfigRequestDelay.Value!.Value,
+                SupportedEnvironmentVariables.RestartAfterUpdateConfigs.Value!.Value
                 );
         }
     }

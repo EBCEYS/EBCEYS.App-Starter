@@ -29,8 +29,7 @@ namespace EBCEYS.Container_AppStarter.Options
                 TimeSpan.FromSeconds(30.0),
                 "rabbitmq",
                 @"C:\\AppStarter\TestConfigs",
-                true
-                );
+                true);
         }
     }
 }

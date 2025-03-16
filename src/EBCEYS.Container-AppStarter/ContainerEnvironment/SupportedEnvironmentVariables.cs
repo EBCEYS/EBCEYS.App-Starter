@@ -1,4 +1,5 @@
-﻿using EBCEYS.ContainersEnvironment.ServiceEnvironment;
+﻿using System.Text;
+using EBCEYS.ContainersEnvironment.ServiceEnvironment;
 
 namespace EBCEYS.Container_AppStarter.ContainerEnvironment
 {
@@ -24,5 +25,19 @@ namespace EBCEYS.Container_AppStarter.ContainerEnvironment
         public static ServiceEnvironmentVariable<string> ExecArgs { get; } = new(appStartExecArgs, string.Empty);
         public static ServiceEnvironmentVariable<string?> WorkingDirectory { get; } = new(appWorkingDirectory, null);
         public static ServiceEnvironmentVariable<bool?> RestartAfterUpdateConfigs { get; } = new(restartAppOnUpdate, true);
+        public static IEnumerable<ServiceEnvironmentInfo> GetInfo()
+        {
+            return [BreakStartIfNoConfig.GetInfo(), HttpClientTimeout.GetInfo(), ConfigRequestPeriod.GetInfo(), ConfigRequestRetries.GetInfo(), ConfigRequestDelay.GetInfo(),
+            DelayBeforeStart.GetInfo(), ExecFile.GetInfo(), ExecArgs.GetInfo(), WorkingDirectory.GetInfo(), RestartAfterUpdateConfigs.GetInfo()];
+        }
+        public static string GetHelp()
+        {
+            StringBuilder sb = new();
+            foreach (ServiceEnvironmentInfo info in GetInfo())
+            {
+                sb.AppendLine(info.ToString());
+            }
+            return sb.ToString();
+        }
     }
 }

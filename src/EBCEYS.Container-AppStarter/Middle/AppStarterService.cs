@@ -29,7 +29,7 @@ namespace EBCEYS.Container_AppStarter.Middle
                     await Task.Delay(1000, stoppingToken);
                     throw new Exception($"ERROR ON GETTING CONFIGURATION EXT: {Program.exitCodeNoConnection}");
                 }
-                if (app == null || filesUpdated > 0)
+                if (app == null || (filesUpdated > 0 && opts.RestartAfterConfUpdates))
                 {
                     await RestartProcess(stoppingToken);
                 }

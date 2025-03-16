@@ -1,5 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Net.Http.Json;
+using System.Text.Json;
+using EBCEYS.Container_AppStarter.ContainerEnvironment;
 using EBCEYS.Container_AppStarter.Options;
 using EBCEYS.ContainersEnvironment.Configuration.Models;
 using EBCEYS.ContainersEnvironment.HealthChecks;
@@ -47,7 +49,8 @@ namespace EBCEYS.Container_AppStarter.Middle
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     health.SetHealthyStatus();
-                    return await response.Content.ReadFromJsonAsync<IEnumerable<ConfigurationFileInfo>>(token);
+                    string obj = await response.Content.ReadAsStringAsync(token);
+                    return JsonSerializer.Deserialize(obj, SourceGenerationContext.Default.IEnumerableConfigurationFileInfo);
                 }
                 health.SetHealthyStatus();
                 return [];
@@ -115,7 +118,7 @@ namespace EBCEYS.Container_AppStarter.Middle
                     continue;
                 }
                 FileInfo newFile = new(serverFileInfo.FileSaveFullPath);
-                Directory.CreateDirectory(newFile.DirectoryName ?? "/");
+                DirectoryInfo newDir = Directory.CreateDirectory(newFile.DirectoryName ?? "/");
                 if (newFile.Exists)
                 {
                     newFile.Delete();
