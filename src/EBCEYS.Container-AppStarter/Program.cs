@@ -10,7 +10,7 @@ namespace EBCEYS.Container_AppStarter
 {
     public class Program
     {
-        private const string helloString = "##########################################\r\n#      _   _      __ ___      _ ___ _  _ #\r\n# /\\  |_) |_) __ (_   |  /\\  |_) | |_ |_)#\r\n#/--\\ |   |      __)  | /--\\ | \\ | |_ | \\#\r\n##########################################";
+        private const string helloString = "#######################################################\r\n#    _               ____  _             _            #\r\n#   / \\   _ __  _ __/ ___|| |_ __ _ _ __| |_ ___ _ __ #\r\n#  / _ \\ | '_ \\| '_ \\___ \\| __/ _` | '__| __/ _ \\ '__|#\r\n# / ___ \\| |_) | |_) |__) | || (_| | |  | ||  __/ |   #\r\n#/_/   \\_\\ .__/| .__/____/ \\__\\__,_|_|   \\__\\___|_|   #\r\n#        |_|   |_|                                    #\r\n#######################################################";
         public const int exitCodeNoConnection = 10;
         public const int exitCodeRunProcess = 11;
         public static void Main(string[] args)

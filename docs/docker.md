@@ -43,7 +43,6 @@ services:
       - CONFIG_PROCESSOR_CONFIGS_PATH=/storage/configs
       - KEYS_STORAGE_PATH=/storage/keys
       - KEYS_STORAGE_FORGET_OLD_KEYS=true
-    #image: docker.io/ebceys/serverconfiguration:1.0.0
     image: ebceys/conf-serv-slim:1.0.0
     volumes:
       - C:\\storage:/storage:rw
@@ -63,7 +62,6 @@ services:
   ebceys.container-appstarter:
     container_name: appstarter
     hostname: appstarter
-    # image: ${DOCKER_REGISTRY-}ebceyscontainerappstarter
     image: docker.io/ebceys/rabbitmq:1.0.0
     environment:
       - CONFIGURATION_CONTAINER_TYPE_NAME=rabbitmq
@@ -86,7 +84,6 @@ services:
     ports:
       - "5675:5672"
       - "15675:15672"
-      - "0:8080"
     volumes:
       - C:\\TestAppStarter:/configs:rw
     networks:
