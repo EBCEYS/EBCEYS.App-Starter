@@ -29,3 +29,13 @@
 ## *HealthChecks*
 
 Для проверок здоровья используется следующая [библиотека](https://github.com/EBCEYS/EBCEYS.ContainersEnvironment). А именно данный [*healthCheck*](https://github.com/EBCEYS/EBCEYS.ContainersEnvironment/blob/master/EBCEYS.ContainersEnvironment/HealthChecks/PingServiceHealthStatusInfo.cs).
+
+## Сборка
+
+В директории src [файл](./src/Dockerfile) 
+
+CMD *docker build -t ebceys/appstarter:1.0.0 .*
+
+Собираемый образ не является самостоятельным и нужен только для копирования в образ с испольняемым приложением.
+
+Пример приведен [тут](./docs/docker.md)

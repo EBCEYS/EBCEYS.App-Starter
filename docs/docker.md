@@ -34,9 +34,9 @@ CMD ["/appstarter/EBCEYS.Container-AppStarter"]
 
 ```yaml
 services:
-  ebceys.server-configuration:
-    container_name: ebceys.server-configuration
-    hostname: ebceys.server-configuration
+  server-configuration:
+    container_name: server-configuration
+    hostname: server-configuration
     environment:
       - DOCKER_CONNECTION_USE_DEFAULT=true
       - CONFIG_PROCESSOR_ENABLE=false
@@ -53,7 +53,7 @@ services:
       - healthchecks.port=8080 
       - healthchecks.restart=true
       - healthchecks.isebceys=true
-      - healthchecks.hostname=ebceys.server-configuration
+      - healthchecks.hostname=server-configuration
     ports:
       - "5007:3000"
       - "5008:8080"
@@ -65,7 +65,7 @@ services:
     image: docker.io/ebceys/rabbitmq:1.0.0
     environment:
       - CONFIGURATION_CONTAINER_TYPE_NAME=rabbitmq
-      - CONFIGURATION_SERVER_URI=http://ebceys.server-configuration:3000
+      - CONFIGURATION_SERVER_URI=http://server-configuration:3000
       - CONFIGURATION_SAVE_DIRECTORY=/configs
       - CONFIGURATION_BREAK_START_IF_NO_CONFIGS=true
       - CONFIGURATION_REQUEST_PERIOD=00:00:10
@@ -84,12 +84,13 @@ services:
     ports:
       - "5675:5672"
       - "15675:15672"
+      - "0:8080"
     volumes:
       - C:\\TestAppStarter:/configs:rw
     networks:
       - "testnet"
     depends_on:
-      - ebceys.server-configuration
+      - server-configuration
 networks:
   testnet:
     name: testnet
