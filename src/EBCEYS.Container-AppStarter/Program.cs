@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using EBCEYS.Container_AppStarter.ContainerEnvironment;
 using EBCEYS.Container_AppStarter.Middle;
 using EBCEYS.ContainersEnvironment.Configuration.Models;
 using EBCEYS.ContainersEnvironment.HealthChecks.Extensions;
@@ -18,7 +19,13 @@ namespace EBCEYS.Container_AppStarter
             WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(args);
             builder.Services.AddSingleton<ConfigRequester>();
             builder.Services.AddHostedService<AppStarterService>();
-            builder.Services.ConfigureHealthChecks();
+
+            bool enableHealthChecks = !SupportedEnvironmentVariables.EnableAppStarterHealthChecks.Value!.Value;
+
+            if (enableHealthChecks)
+            {
+                builder.Services.ConfigureHealthChecks();
+            }
 
             builder.Configuration.AddJsonFile("appsettings.json", true, true);
 
@@ -31,7 +38,10 @@ namespace EBCEYS.Container_AppStarter
 
             WebApplication host = builder.Build();
 
-            host.ConfigureHealthChecks();
+            if (enableHealthChecks)
+            {
+                host.ConfigureHealthChecks();
+            }
 
             host.Run();
         }

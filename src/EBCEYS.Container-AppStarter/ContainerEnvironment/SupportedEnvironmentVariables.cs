@@ -15,6 +15,7 @@ namespace EBCEYS.Container_AppStarter.ContainerEnvironment
         private const string appStartExecArgs = "APP_STARTER_EXECUTION_ARGS";
         private const string appWorkingDirectory = "APP_STARTER_WORKING_DIRECTORY";
         private const string restartAppOnUpdate = "APP_STARTER_RESTART_APP_ON_CONFIG_UPDATE";
+        private const string enableHealthChecks = "APP_STARTER_ENABLE_HEALTHCHECKS";
         public static ServiceEnvironmentVariable<bool?> BreakStartIfNoConfig { get; } = new(breakIfNoConfig, true);
         public static ServiceEnvironmentVariable<TimeSpan?> HttpClientTimeout { get; } = new(httpClientTimeout, TimeSpan.FromSeconds(30.0));
         public static ServiceEnvironmentVariable<TimeSpan?> ConfigRequestPeriod { get; } = new(configRequestPeriod, TimeSpan.FromSeconds(10.0));
@@ -25,6 +26,7 @@ namespace EBCEYS.Container_AppStarter.ContainerEnvironment
         public static ServiceEnvironmentVariable<string> ExecArgs { get; } = new(appStartExecArgs, string.Empty);
         public static ServiceEnvironmentVariable<string?> WorkingDirectory { get; } = new(appWorkingDirectory, null);
         public static ServiceEnvironmentVariable<bool?> RestartAfterUpdateConfigs { get; } = new(restartAppOnUpdate, true);
+        public static ServiceEnvironmentVariable<bool?> EnableAppStarterHealthChecks { get; } = new(enableHealthChecks, true);
         public static IEnumerable<ServiceEnvironmentInfo> GetInfo()
         {
             return [BreakStartIfNoConfig.GetInfo(), HttpClientTimeout.GetInfo(), ConfigRequestPeriod.GetInfo(), ConfigRequestRetries.GetInfo(), ConfigRequestDelay.GetInfo(),
