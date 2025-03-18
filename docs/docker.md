@@ -9,10 +9,6 @@ from docker.io/ebceys/app-starter:1.0.0 as starter
 
 from docker.io/rabbitmq:4.0.5-management
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libicu-dev && \
-    rm -rf /var/lib/apt/lists/*
-
 ENV CONFIGURATION_CONTAINER_TYPE_NAME=rabbitmq
 ENV APP_STARTER_EXECUTION_FILE=/docker-entrypoint.sh
 ENV APP_STARTER_EXECUTION_ARGS=rabbitmq-server
@@ -59,9 +55,9 @@ services:
       - "5008:8080"
     networks:
       - "testnet"
-  ebceys.container-appstarter:
-    container_name: appstarter
-    hostname: appstarter
+  ebceys.container-appstarter.rabbitmq:
+    container_name: rabbitmq
+    hostname: rabbitmq
     image: docker.io/ebceys/rabbitmq:1.0.0
     environment:
       - CONFIGURATION_CONTAINER_TYPE_NAME=rabbitmq
@@ -75,18 +71,18 @@ services:
       - APP_STARTER_RESTART_APP_ON_CONFIG_UPDATE=true
       - CONFIGURATION_REQUEST_RETRIES=3
       - CONFIGURATION_REQUEST_DELAY=00:00:05
-    labels:
+    labels: # labels с информацией для хелсчеков
       - healthchecks.enabled=true 
       - healthchecks.port=8080 
       - healthchecks.restart=true
       - healthchecks.isebceys=true
-      - healthchecks.hostname=appstarter
+      - healthchecks.hostname=rabbitmq
     ports:
       - "5675:5672"
       - "15675:15672"
       - "0:8080"
     volumes:
-      - C:\\TestAppStarter:/configs:rw
+      - C:\\TestAppStarter:/configs:rw # конфиги пробрасываются для rabbitmq
     networks:
       - "testnet"
     depends_on:

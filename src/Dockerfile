@@ -12,7 +12,11 @@ COPY ["./EBCEYS.Container-AppStarter/", "./"]
 
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet restore "./EBCEYS.Container-AppStarter.csproj"
-RUN dotnet publish "./EBCEYS.Container-AppStarter.csproj" -c $BUILD_CONFIGURATION -o /appstarter/publish -r linux-x64
+RUN dotnet publish "./EBCEYS.Container-AppStarter.csproj" \ 
+    -c $BUILD_CONFIGURATION \ 
+    /p:PublishReadyToRun=true \
+    -o /appstarter/publish \ 
+    -r linux-x64
 
 FROM base AS final
 WORKDIR /appstarter
