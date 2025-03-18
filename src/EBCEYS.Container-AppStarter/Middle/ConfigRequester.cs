@@ -1,13 +1,8 @@
-﻿using System.Linq.Expressions;
-using System.Net.Http.Json;
-using System.Text.Json;
-using EBCEYS.Container_AppStarter.ContainerEnvironment;
+﻿using System.Text.Json;
 using EBCEYS.Container_AppStarter.Options;
 using EBCEYS.ContainersEnvironment.Configuration.Models;
 using EBCEYS.ContainersEnvironment.HealthChecks;
-using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.AspNetCore.Http.Extensions;
-using NLog;
 
 namespace EBCEYS.Container_AppStarter.Middle
 {
@@ -15,7 +10,7 @@ namespace EBCEYS.Container_AppStarter.Middle
     {
         private readonly HttpClient client;
         private readonly ILogger<ConfigRequester> logger;
-        private readonly PingServiceHealthStatusInfo health;
+        private readonly PingServiceHealthStatusInfo? health;
 
         private readonly Uri serverUri;
         private readonly Uri fileInfoUri;
@@ -23,7 +18,7 @@ namespace EBCEYS.Container_AppStarter.Middle
         private readonly string configSaveDirectoryBase;
         private readonly bool breakIfNoConfigs;
 
-        public ConfigRequester(ILogger<ConfigRequester> logger, PingServiceHealthStatusInfo health, ConfigRequesterOptions? opts = null)
+        public ConfigRequester(ILogger<ConfigRequester> logger, PingServiceHealthStatusInfo? health = null, ConfigRequesterOptions? opts = null)
         {
             this.logger = logger;
             this.health = health;
@@ -48,17 +43,17 @@ namespace EBCEYS.Container_AppStarter.Middle
                 logger.LogDebug("Response status code = {code}", response.StatusCode);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    health.SetHealthyStatus();
+                    health?.SetHealthyStatus();
                     string obj = await response.Content.ReadAsStringAsync(token);
                     return JsonSerializer.Deserialize(obj, SourceGenerationContext.Default.IEnumerableConfigurationFileInfo);
                 }
-                health.SetHealthyStatus();
+                health?.SetHealthyStatus();
                 return [];
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error on requesting config files info!");
-                health.SetUnhealthyStatus($"ERROR ON REQUESTING CONFIGS! {ex.Message}");
+                health?.SetUnhealthyStatus($"ERROR ON REQUESTING CONFIGS! {ex.Message}");
                 return null;
             }
         }
@@ -74,15 +69,15 @@ namespace EBCEYS.Container_AppStarter.Middle
                 logger.LogDebug("Response status code = {code}", response.StatusCode);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    health.SetHealthyStatus();
+                    health?.SetHealthyStatus();
                     return await response.Content.ReadAsStreamAsync(token);
                 }
-                health.SetHealthyStatus();
+                health?.SetHealthyStatus();
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error on requesting config file {filename}", fileName);
-                health.SetUnhealthyStatus($"ERROR ON REQUESTING CONFIGS! {ex.Message}");
+                health?.SetUnhealthyStatus($"ERROR ON REQUESTING CONFIGS! {ex.Message}");
             }
             return null;
         }
@@ -96,7 +91,7 @@ namespace EBCEYS.Container_AppStarter.Middle
                 logger.LogDebug("No config files avaliable...");
                 if (breakIfNoConfigs)
                 {
-                    health.SetUnhealthyStatus("NO CONFIGURATION FILES AVALIABLE");
+                    health?.SetUnhealthyStatus("NO CONFIGURATION FILES AVALIABLE");
                     return -1;
                 }
                 return 0;
@@ -134,7 +129,7 @@ namespace EBCEYS.Container_AppStarter.Middle
                 
                 filesUpdated++;
             }
-            health.SetHealthyStatus("UPDATE CONFIGURATION SUCCESSFULLY");
+            health?.SetHealthyStatus("UPDATE CONFIGURATION SUCCESSFULLY");
             return filesUpdated;
         }
 

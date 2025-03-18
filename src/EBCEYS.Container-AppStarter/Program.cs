@@ -20,7 +20,7 @@ namespace EBCEYS.Container_AppStarter
             builder.Services.AddSingleton<ConfigRequester>();
             builder.Services.AddHostedService<AppStarterService>();
 
-            bool enableHealthChecks = !SupportedEnvironmentVariables.EnableAppStarterHealthChecks.Value!.Value;
+            bool enableHealthChecks = SupportedEnvironmentVariables.EnableAppStarterHealthChecks.Value!.Value;
 
             if (enableHealthChecks)
             {

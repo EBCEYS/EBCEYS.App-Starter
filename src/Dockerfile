@@ -4,6 +4,10 @@ USER $APP_UID
 FROM mcr.microsoft.com/dotnet/sdk:9.0-noble AS publish
 WORKDIR /src
 
+RUN apt-get update && \
+    apt-get install gcc -y && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY ["./EBCEYS.Container-AppStarter/", "./"]
 
 ARG BUILD_CONFIGURATION=Release

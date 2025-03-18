@@ -4,7 +4,7 @@ using EBCEYS.ContainersEnvironment.HealthChecks;
 
 namespace EBCEYS.Container_AppStarter.Middle
 {
-    internal class AppStarterService(ILogger<AppStarterService> logger, PingServiceHealthStatusInfo health, ConfigRequester requester, AppStarterServiceOptions? opts = null) : BackgroundService
+    internal class AppStarterService(ILogger<AppStarterService> logger, ConfigRequester requester, AppStarterServiceOptions? opts = null, PingServiceHealthStatusInfo? health = null) : BackgroundService
     {
         private readonly AppStarterServiceOptions opts = opts ?? AppStarterServiceOptions.CreateFromEnvironment();
         private Process? app;
@@ -12,7 +12,7 @@ namespace EBCEYS.Container_AppStarter.Middle
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             logger.LogInformation("Starting...");
-            health.SetHealthyStatus("Starting...");
+            health?.SetHealthyStatus("Starting...");
             await Task.Delay(opts.DelayBeforeStart, stoppingToken);
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -36,13 +36,13 @@ namespace EBCEYS.Container_AppStarter.Middle
                 await Task.Delay(opts.ConfigRequestPeriod, stoppingToken);
                 if (app == null)
                 {
-                    health.SetUnhealthyStatus("NOT FOUND EXECUTION FILE");
+                    health?.SetUnhealthyStatus("NOT FOUND EXECUTION FILE");
                     throw new Exception($"ERROR ON STARTING APP EXT: {Program.exitCodeRunProcess}");
                 }
                 bool isTaskEnded = (appRunTask?.IsCompleted ?? true) || (appRunTask?.IsFaulted ?? true);
                 if (isTaskEnded)
                 {
-                    health.SetUnhealthyStatus("FAILED TO EXECUTE APP");
+                    health?.SetUnhealthyStatus("FAILED TO EXECUTE APP");
                     throw new Exception($"ERROR ON STARTING APP EXT: {Program.exitCodeRunProcess}");
                 }
             }
@@ -71,10 +71,10 @@ namespace EBCEYS.Container_AppStarter.Middle
             app = Process.Start(info);
             if (app == null)
             {
-                health.SetUnhealthyStatus("NOT FOUND EXECUTION FILE");
+                health?.SetUnhealthyStatus("NOT FOUND EXECUTION FILE");
                 return;
             }
-            health.SetHealthyStatus("START APP");
+            health?.SetHealthyStatus("START APP");
             await app.WaitForExitAsync(token);
         }
 
