@@ -26,7 +26,7 @@ namespace EBCEYS.Container_AppStarter.ContainerEnvironment
         public static ServiceEnvironmentVariable<string> ExecArgs { get; } = new(appStartExecArgs, string.Empty);
         public static ServiceEnvironmentVariable<string?> WorkingDirectory { get; } = new(appWorkingDirectory, null);
         public static ServiceEnvironmentVariable<bool?> RestartAfterUpdateConfigs { get; } = new(restartAppOnUpdate, true);
-        public static ServiceEnvironmentVariable<bool?> EnableAppStarterHealthChecks { get; } = new(enableHealthChecks, true);
+        public static ServiceEnvironmentVariable<bool> EnableAppStarterHealthChecks { get; } = new(enableHealthChecks, true);
         public static IEnumerable<ServiceEnvironmentInfo> GetInfo()
         {
             return [BreakStartIfNoConfig.GetInfo(), HttpClientTimeout.GetInfo(), ConfigRequestPeriod.GetInfo(), ConfigRequestRetries.GetInfo(), ConfigRequestDelay.GetInfo(),

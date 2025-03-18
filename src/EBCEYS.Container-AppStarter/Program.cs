@@ -4,6 +4,7 @@ using EBCEYS.Container_AppStarter.Middle;
 using EBCEYS.ContainersEnvironment.Configuration.Models;
 using EBCEYS.ContainersEnvironment.HealthChecks.Extensions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using NLog;
 using NLog.Web;
 
@@ -16,34 +17,52 @@ namespace EBCEYS.Container_AppStarter
         public const int exitCodeRunProcess = 11;
         public static void Main(string[] args)
         {
-            WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(args);
-            builder.Services.AddSingleton<ConfigRequester>();
-            builder.Services.AddHostedService<AppStarterService>();
+            bool enableHealthChecks = SupportedEnvironmentVariables.EnableAppStarterHealthChecks.Value;
 
-            bool enableHealthChecks = SupportedEnvironmentVariables.EnableAppStarterHealthChecks.Value!.Value;
-
-            if (enableHealthChecks)
+            if (!enableHealthChecks)
             {
+                HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+                builder.Services.AddSingleton<ConfigRequester>();
+                builder.Services.AddHostedService<AppStarterService>();
+
+                builder.Configuration.AddJsonFile("appsettings.json", true, true);
+
+                Logger logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+
+                builder.Logging.ClearProviders();
+                builder.Logging.AddNLog(logger.Factory.Configuration);
+
+                logger.Info(helloString);
+                logger.Debug("Healthchecks enabled: {enabled}", enableHealthChecks);
+
+                IHost app = builder.Build();
+
+                app.Run();
+            }
+            else
+            {
+                WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(args);
+                builder.Services.AddSingleton<ConfigRequester>();
+                builder.Services.AddHostedService<AppStarterService>();
+
                 builder.Services.ConfigureHealthChecks();
-            }
 
-            builder.Configuration.AddJsonFile("appsettings.json", true, true);
+                builder.Configuration.AddJsonFile("appsettings.json", true, true);
 
-            Logger logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+                Logger logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-            builder.Logging.ClearProviders();
-            builder.Logging.AddNLog(logger.Factory.Configuration);
+                builder.Logging.ClearProviders();
+                builder.Logging.AddNLog(logger.Factory.Configuration);
 
-            logger.Info(helloString);
+                logger.Info(helloString);
+                logger.Debug("Healthchecks enabled: {enabled}", enableHealthChecks);
 
-            WebApplication host = builder.Build();
+                WebApplication host = builder.Build();
 
-            if (enableHealthChecks)
-            {
                 host.ConfigureHealthChecks();
-            }
 
-            host.Run();
+                host.Run();
+            }
         }
     }
     [JsonSourceGenerationOptions(WriteIndented = false, PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
