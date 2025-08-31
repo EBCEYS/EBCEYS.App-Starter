@@ -13,6 +13,7 @@
 1. *APP_STARTER_WORKING_DIRECTORY* - *DirectoryString*. Рабочая директория исполняемого файла. По умолчанию берется директория исполняемого файла.
 1. *APP_STARTER_RESTART_APP_ON_CONFIG_UPDATE* - *true/false*. Перезапускать испольняемое приложение в случае обновления конфигурации. По умолчанию *true*.
 1. *APP_STARTER_ENABLE_HEALTHCHECKS* - *true/false*. Включать *HealthChecks* *App-Starter-a*. Можно выключить проверки здоровья стартера если запускаемое приложение уже их включает. По умолчанию *true*.
+1. *APP_STARTER_LOG_LEVEL* - *[enum](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-9.0#log-level)*. Уровень логирования сервиса. По умолчанию *Debug*.
 
 ## *Configuration*:
 
